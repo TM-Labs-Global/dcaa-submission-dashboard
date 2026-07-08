@@ -1,0 +1,22 @@
+/* =============================================================
+   SPACING TOKENS
+   Design System — Multi-Brand Marketing Funnel Dashboard
+   =============================================================
+   Base unit: 8px.
+   All spacing values are multiples or half-multiples of 8px.
+
+   USAGE:
+   - Page padding:  --spacing-xl (32px) desktop, --spacing-md (16px) mobile
+   - Card padding:  --spacing-lg (24px)
+   - Grid gutters:  --spacing-md (16px) between metric cards
+   ============================================================= */
+
+:root {
+  --spacing-xxs:  4px;   /*  0.5 × base */
+  --spacing-xs:   8px;   /*  1   × base */
+  --spacing-sm:   12px;  /*  1.5 × base */
+  --spacing-md:   16px;  /*  2   × base */
+  --spacing-lg:   24px;  /*  3   × base — card padding */
+  --spacing-xl:   32px;  /*  4   × base — page padding desktop */
+  --spacing-xxl:  48px;  /*  6   × base — empty-state vertical padding */
+}

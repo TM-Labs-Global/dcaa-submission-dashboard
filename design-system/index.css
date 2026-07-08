@@ -1,0 +1,32 @@
+/* =============================================================
+   DESIGN SYSTEM — Master Entry Point
+   Multi-Brand Marketing Funnel Dashboard
+   =============================================================
+   Import order matters:
+     1. Fonts first   — @font-face must be declared before any
+        rule that references the font-family name.
+     2. Tokens next   — colors, spacing, radius, elevation must
+        exist before typography references them.
+     3. Typography    — type-scale utility classes reference
+        --font-heading / --font-body from the token layer.
+     4. Animations    — standalone; no dependencies on other tokens.
+
+   This file is the ONLY design-system import needed in
+   app/globals.css — do not import individual token files
+   directly in component or page files.
+   ============================================================= */
+
+/* ── 1. Fonts ── */
+@import './fonts/_font-face.css';
+
+/* ── 2. Primitive tokens ── */
+@import './tokens/_colors.css';
+@import './tokens/_spacing.css';
+@import './tokens/_radius.css';
+@import './tokens/_elevation.css';
+
+/* ── 3. Typography (depends on --font-* tokens) ── */
+@import './tokens/_typography.css';
+
+/* ── 4. Animations ── */
+@import './tokens/_animations.css';

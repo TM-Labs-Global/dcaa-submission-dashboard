@@ -1,0 +1,50 @@
+/* =============================================================
+   ANIMATION TOKENS & KEYFRAMES
+   Design System — Multi-Brand Marketing Funnel Dashboard
+   =============================================================
+   Two animation roles in this system:
+     1. Skeleton pulse  — loading state on metric cards
+     2. Spinner         — brand dropdown loading indicator
+
+   Respects prefers-reduced-motion: all animations pause when
+   the user has requested reduced motion in their OS settings.
+   ============================================================= */
+
+/* ── Keyframes ── */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ── Animation utility classes ── */
+
+/* Loading spinner — used on CircleNotch icon in BrandSwitcher */
+.animate-spin-slow {
+  animation: spin 0.8s linear infinite;
+}
+
+/* Skeleton pulse — used on placeholder bars in MetricCard loading variant */
+.animate-skeleton-pulse {
+  animation: skeleton-pulse 1.8s ease-in-out infinite;
+}
+
+/* ── Reduced-motion override ── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin-slow,
+  .animate-skeleton-pulse {
+    animation: none;
+    opacity: 0.6; /* Static muted state instead of animated */
+  }
+}

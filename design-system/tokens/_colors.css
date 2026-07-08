@@ -1,0 +1,87 @@
+/* =============================================================
+   COLOR TOKENS
+   Design System — Multi-Brand Marketing Funnel Dashboard
+   =============================================================
+   Organized by:
+     1. Brand & Accent
+     2. Neutrals
+     3. Status (functional — not decorative)
+
+   USAGE RULES:
+   - Primary navy  (#030835) → structure, headers, primary buttons,
+     active states, raw-volume metric values.
+   - Secondary green (#00AB3A) → conversion rate card, success/live
+     signals ONLY. Never use as a general accent color.
+   - Error red     → error states ONLY (never decorative).
+   - Warning amber → zero-view edge-case caption ONLY.
+   ============================================================= */
+
+:root {
+  /* ── 1. Brand & Accent ── */
+
+  /* Deep navy: structural anchor */
+  --color-primary:          #030835;
+  /* Lifted step for hover/active on navy buttons */
+  --color-primary-hover:    #0a1352;
+  /* Near-white navy wash — active-state background on dropdown/nav items */
+  --color-primary-tint-10:  #e8e9ef;
+
+  /* Green: reserved EXCLUSIVELY for positive/live signals */
+  --color-secondary:        #00AB3A;
+  /* Background fill for the Conversion Ratio card only */
+  --color-secondary-tint-10: #e5f7ea;
+  /* Text-safe dark variant — green text on light backgrounds */
+  --color-secondary-dark:   #00802b;
+
+  /* ── 2. Neutrals ── */
+
+  /* Dominant page and card background */
+  --color-canvas:           #ffffff;
+  /* Page background behind cards (gives white cards a surface) */
+  --color-canvas-subtle:    #f7f8fa;
+  /* 1px borders on metric cards, dropdown, grid dividers */
+  --color-hairline:         #e3e5ea;
+  /* Input borders and dropdown resting-state border */
+  --color-hairline-strong:  #d0d3da;
+  /* Primary text — near-black with faint navy undertone */
+  --color-ink:              #14161f;
+  /* Default label/paragraph text */
+  --color-body:             #3a3d4a;
+  /* Secondary/meta text — timestamps, fine print */
+  --color-muted:            #767a87;
+  /* Disabled button text and inactive states */
+  --color-disabled:         #b3b6bf;
+
+  /* ── 3. Status (functional — not decorative) ── */
+
+  /* Error block text, icon, card border */
+  --color-error:            #c4332e;
+  /* Background fill for an errored metric card */
+  --color-error-tint:       #fbeceb;
+  /* Zero-view edge-case warning caption only */
+  --color-warning:          #b3760a;
+}
+
+/* ── Tailwind v4 theme bridge ──
+   Maps CSS custom properties into Tailwind's @theme so all
+   color utilities (bg-primary, text-error, border-hairline, …)
+   are available in JSX without arbitrary values.           */
+@theme inline {
+  --color-primary:           var(--color-primary);
+  --color-primary-hover:     var(--color-primary-hover);
+  --color-primary-tint-10:   var(--color-primary-tint-10);
+  --color-secondary:         var(--color-secondary);
+  --color-secondary-tint-10: var(--color-secondary-tint-10);
+  --color-secondary-dark:    var(--color-secondary-dark);
+  --color-canvas:            var(--color-canvas);
+  --color-canvas-subtle:     var(--color-canvas-subtle);
+  --color-hairline:          var(--color-hairline);
+  --color-hairline-strong:   var(--color-hairline-strong);
+  --color-ink:               var(--color-ink);
+  --color-body:              var(--color-body);
+  --color-muted:             var(--color-muted);
+  --color-disabled:          var(--color-disabled);
+  --color-error:             var(--color-error);
+  --color-error-tint:        var(--color-error-tint);
+  --color-warning:           var(--color-warning);
+}

@@ -1,0 +1,19 @@
+/* =============================================================
+   BORDER RADIUS TOKENS
+   Design System — Multi-Brand Marketing Funnel Dashboard
+   =============================================================
+   No --rounded-none: hard rectangular edges are not part of
+   this dashboard's visual language. Every interactive surface
+   has at least a small radius.
+   ============================================================= */
+
+:root {
+  /* Buttons, brand dropdown trigger, status badges */
+  --rounded-sm:    6px;
+  /* Metric cards */
+  --rounded-md:    10px;
+  /* Page-level container card / empty-state container */
+  --rounded-lg:    14px;
+  /* "Live" status dot container, error/success inline badges */
+  --rounded-pill:  9999px;
+}

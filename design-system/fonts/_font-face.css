@@ -1,0 +1,191 @@
+/* =============================================================
+   FONT FACE DECLARATIONS — Elms Sans (self-hosted)
+   Design System — Multi-Brand Marketing Funnel Dashboard
+   =============================================================
+   Source: /public/fonts/elms-sans/ — served by Next.js at /fonts/elms-sans/*.
+   Loaded locally — no CDN dependency, no Google Fonts request.
+
+   Strategy:
+   - Primary: Variable font (covers all weights 100–900 in one file)
+   - Fallback per-weight: Static TTF files for browsers without
+     variable-font support (extremely rare in 2025, but included
+     for robustness).
+
+   Font-display: swap — body text renders in the system fallback
+   immediately, then swaps to Elms Sans once loaded. Prevents
+   invisible text flash on slower connections.
+
+   WEIGHT MAP (static fallbacks):
+     100 → ElmsSans-Thin
+     200 → ElmsSans-ExtraLight
+     300 → ElmsSans-Light
+     400 → ElmsSans-Regular   ← body copy default
+     500 → ElmsSans-Medium    ← metric labels
+     600 → ElmsSans-SemiBold  ← body-strong, buttons
+     700 → ElmsSans-Bold
+     800 → ElmsSans-ExtraBold
+     900 → ElmsSans-Black
+   ============================================================= */
+
+/* ── Variable font (covers all weights) ── */
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ── Static per-weight fallbacks ── */
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-ThinItalic.ttf') format('truetype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-ExtraLightItalic.ttf') format('truetype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-SemiBoldItalic.ttf') format('truetype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-ExtraBoldItalic.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Elms Sans';
+  src: url('/fonts/elms-sans/ElmsSans-BlackItalic.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}

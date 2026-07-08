@@ -1,0 +1,27 @@
+/* =============================================================
+   ELEVATION TOKENS
+   Design System — Multi-Brand Marketing Funnel Dashboard
+   =============================================================
+   Shadow philosophy: shadows are FUNCTIONAL, not decorative.
+   They appear only to indicate "this surface is currently
+   active / loading / open" — never on resting-state cards.
+
+   Levels:
+   ┌───────────────┬────────────────────────────────────────────┐
+   │ Flat          │ No shadow. 1px --color-hairline border.     │
+   │               │ Default metric card, dropdown, page bg.     │
+   ├───────────────┼────────────────────────────────────────────┤
+   │ Soft lift     │ --shadow-soft-lift                          │
+   │               │ Dropdown open state, card mid-fetch.        │
+   ├───────────────┼────────────────────────────────────────────┤
+   │ Active tint   │ Background fill only (no shadow).           │
+   │               │ --color-primary-tint-10 → selected option.  │
+   │               │ --color-error-tint      → errored card.      │
+   │               │ --color-secondary-tint-10 → positive card.  │
+   └───────────────┴────────────────────────────────────────────┘
+   ============================================================= */
+
+:root {
+  /* Dropdown open state + any card mid-fetch */
+  --shadow-soft-lift: rgba(3, 8, 53, 0.06) 0px 2px 8px;
+}

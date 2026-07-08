@@ -10,12 +10,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Check } from '@phosphor-icons/react';
 
 export function InviteModal({ onClose, onInviteSent }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
   const [showLink, setShowLink] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   async function handleGenerateLink(e) {
     e.preventDefault();
@@ -49,6 +51,8 @@ export function InviteModal({ onClose, onInviteSent }) {
 
   function handleCopyLink() {
     navigator.clipboard.writeText(inviteLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 4000);
   }
 
   if (showLink) {
@@ -68,9 +72,20 @@ export function InviteModal({ onClose, onInviteSent }) {
             <div className="flex gap-3 pt-2">
               <Button
                 onClick={handleCopyLink}
-                className="flex-1 bg-primary text-white hover:bg-primary-hover h-11 rounded-xl font-medium shadow-soft-lift cursor-pointer transition-all duration-200"
+                className={`flex-1 h-11 rounded-xl font-medium shadow-soft-lift cursor-pointer transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                  copied 
+                    ? 'bg-secondary hover:bg-secondary text-primary' 
+                    : 'bg-primary text-white hover:bg-primary-hover'
+                }`}
               >
-                Copy Link
+                {copied ? (
+                  <>
+                    <Check size={16} weight="bold" className="text-primary" />
+                    Copied!
+                  </>
+                ) : (
+                  'Copy Link'
+                )}
               </Button>
               <Button
                 onClick={onClose}

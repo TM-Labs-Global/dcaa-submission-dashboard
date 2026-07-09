@@ -19,11 +19,12 @@ function toISODate(date) {
 }
 
 function formatDisplayDate(isoDate) {
-  return new Date(isoDate).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const date = new Date(isoDate + 'T00:00:00Z');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const month = months[date.getUTCMonth()];
+  const day = date.getUTCDate();
+  const year = date.getUTCFullYear();
+  return `${month} ${day}, ${year}`;
 }
 
 export function presetToRange(presetKey) {

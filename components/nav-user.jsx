@@ -15,7 +15,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { firstNameFromEmail, initialFromEmail } from "@/lib/formatter";
-import { ShieldIcon, LogOutIcon } from "lucide-react";
+import { Shield, SignOut } from "@phosphor-icons/react";
 
 export function NavUser() {
 	const { data: session } = useSession();
@@ -32,26 +32,28 @@ export function NavUser() {
 						</AvatarFallback>
 					</Avatar></DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-60">
-				<DropdownMenuLabel className="flex items-center gap-3 font-normal">
-					<Avatar className="size-9">
-						<AvatarFallback className="bg-accent text-accent-foreground font-semibold">
-							{initialFromEmail(email)}
-						</AvatarFallback>
-					</Avatar>
-					<div className="min-w-0">
-						<p className="font-medium text-foreground text-sm">
-							{firstNameFromEmail(email)}
-						</p>
-						<p className="max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-muted-foreground text-xs">
-							{email}
-						</p>
-					</div>
-				</DropdownMenuLabel>
+				<DropdownMenuGroup>
+					<DropdownMenuLabel className="flex items-center gap-3 font-normal">
+						<Avatar className="size-9">
+							<AvatarFallback className="bg-accent text-accent-foreground font-semibold">
+								{initialFromEmail(email)}
+							</AvatarFallback>
+						</Avatar>
+						<div className="min-w-0">
+							<p className="font-medium text-foreground text-sm">
+								{firstNameFromEmail(email)}
+							</p>
+							<p className="max-w-full overflow-hidden overflow-ellipsis whitespace-nowrap text-muted-foreground text-xs">
+								{email}
+							</p>
+						</div>
+					</DropdownMenuLabel>
+				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				{isAdmin && (
 					<DropdownMenuGroup>
 						<DropdownMenuItem onClick={() => (window.location.href = "/admin/users")}>
-							<ShieldIcon />
+							<Shield />
 							Manage users
 						</DropdownMenuItem>
 					</DropdownMenuGroup>
@@ -62,7 +64,7 @@ export function NavUser() {
                         className="w-full cursor-pointer"
                         variant="destructive"
                         onClick={() => signOut({ callbackUrl: "/login" })}>
-						<LogOutIcon />
+						<SignOut />
 						Sign out
 					</DropdownMenuItem>
 				</DropdownMenuGroup>

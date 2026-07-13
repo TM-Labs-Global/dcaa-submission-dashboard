@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,7 @@ import {
 import { Check } from '@phosphor-icons/react';
 
 export function InviteModal({ onClose, onInviteSent }) {
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [inviteLink, setInviteLink] = useState('');
@@ -22,6 +24,12 @@ export function InviteModal({ onClose, onInviteSent }) {
   async function handleGenerateLink(e) {
     e.preventDefault();
     setError('');
+
+    if (!email.trim()) {
+      setError('Please input a valid email to generate a link.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -30,6 +38,7 @@ export function InviteModal({ onClose, onInviteSent }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'create',
+          email: email.trim(),
         }),
       });
 
@@ -117,6 +126,25 @@ export function InviteModal({ onClose, onInviteSent }) {
             </div>
           )}
 
+          <div className="space-y-2">
+            <Label htmlFor="invite-email" className="text-[11px] font-bold tracking-widest text-muted-foreground uppercase">
+              Email Address
+            </Label>
+            <Input
+              id="invite-email"
+              type="email"
+              placeholder="recipient@example.com"
+              className="h-12 bg-canvas-subtle border-hairline hover:border-hairline-strong focus:bg-canvas transition-colors duration-200"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              required
+            />
+            <p className="text-[11px] text-muted-foreground">
+              The generated invite link will be locked exclusively to this email address.
+            </p>
+          </div>
+
           <div className="flex gap-3 pt-2">
             <Button
               type="submit"
@@ -138,3 +166,4 @@ export function InviteModal({ onClose, onInviteSent }) {
     </Dialog>
   );
 }
+

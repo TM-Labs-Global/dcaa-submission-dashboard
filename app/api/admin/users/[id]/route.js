@@ -10,7 +10,7 @@ export async function PATCH(request, { params }) {
     return Response.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = params;
+  const { id } = await params;
   const { action } = await request.json();
 
   if (!action) {

@@ -145,7 +145,7 @@ export function ApplicationTable({ applications }) {
     all: baseFilteredApplications.length,
     shortlisted: 0,
     rejected: 0,
-    hired: 0,
+    accepted: 0,
   };
 
   baseFilteredApplications.forEach(app => {
@@ -340,7 +340,7 @@ export function ApplicationTable({ applications }) {
           { id: 'all', label: 'All' },
           { id: 'shortlisted', label: 'Shortlisted' },
           { id: 'rejected', label: 'Rejected' },
-          { id: 'hired', label: 'Hired' }
+          { id: 'accepted', label: 'Accepted' }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -423,7 +423,7 @@ export function ApplicationTable({ applications }) {
                 const appStatus = app.status || "pending";
                 const getStatusBadge = (status) => {
                   switch (status) {
-                    case 'hired': return <span className="inline-flex items-center rounded-full bg-green-500/15 px-2 py-1 text-[11px] font-medium text-green-700 ring-1 ring-inset ring-green-600/20">● Hired</span>;
+                    case 'accepted': return <span className="inline-flex items-center rounded-full bg-green-500/15 px-2 py-1 text-[11px] font-medium text-green-700 ring-1 ring-inset ring-green-600/20">● Accepted</span>;
                     case 'shortlisted': return <span className="inline-flex items-center rounded-full bg-yellow-500/15 px-2 py-1 text-[11px] font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">● Shortlisted</span>;
                     case 'rejected': return <span className="inline-flex items-center rounded-full bg-red-500/15 px-2 py-1 text-[11px] font-medium text-red-700 ring-1 ring-inset ring-red-600/20">● Rejected</span>;
                     default: return <span className="inline-flex items-center rounded-full bg-gray-500/15 px-2 py-1 text-[11px] font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20">● Not Evaluated</span>;
@@ -478,7 +478,7 @@ export function ApplicationTable({ applications }) {
                               <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'not_evaluated')}>Not Evaluated</DropdownMenuItem>
                               <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'shortlisted')}>Shortlisted</DropdownMenuItem>
                               <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'rejected')}>Rejected</DropdownMenuItem>
-                              <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'hired')}>Hired</DropdownMenuItem>
+                              <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'accepted')}>Accepted</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
 
@@ -508,8 +508,8 @@ export function ApplicationTable({ applications }) {
                                     <DropdownMenuItem onClick={() => handleStatusUpdate(app.id, 'rejected')}>
                                       Rejected
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleStatusUpdate(app.id, 'hired')}>
-                                      Hired
+                                    <DropdownMenuItem onClick={() => handleStatusUpdate(app.id, 'accepted')}>
+                                      Accepted
                                     </DropdownMenuItem>
                                   </DropdownMenuContent>
                                 </DropdownMenu>

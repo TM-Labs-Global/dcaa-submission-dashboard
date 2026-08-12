@@ -28,7 +28,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Funnel, Download, CaretDown, Calendar as CalendarIcon, X } from "@phosphor-icons/react";
+import { Funnel, Download, CaretDown, Calendar as CalendarIcon, X, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { format, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -66,6 +66,14 @@ export function ApplicationTable({ applications }) {
   
   // Store dates keyed by stream name to preserve filter state across navigation
   const [streamDates, setStreamDates] = useState({});
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
+
+  // Reset pagination to first page when any filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedStream, subStreamFilter, streamDates]);
 
   // Get the current active date for the selected stream
   const date = streamDates[selectedStream] || { from: undefined, to: undefined };
@@ -126,6 +134,27 @@ export function ApplicationTable({ applications }) {
 
     return streamMatch && dateMatch;
   });
+
+  const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredApplications.slice(indexOfFirstItem, indexOfLastItem);
+
+  const getPageNumbers = () => {
+    const pages = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+      }
+    }
+    return pages;
+  };
 
   // 3. Export to JSON helper (Client-side)
   const exportToJSON = () => {
@@ -276,7 +305,7 @@ export function ApplicationTable({ applications }) {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredApplications.map((app) => {
+              currentItems.map((app) => {
                 // Extract the core fields based on Fluent Forms standard keys
                 const raw = app.raw_data || {};
                 const userInputs = raw.__submission?.user_inputs || {};
@@ -457,6 +486,56 @@ export function ApplicationTable({ applications }) {
         </TableBody>
       </Table>
     </div>
+
+    {/* Pagination Controls */}
+    {totalPages > 1 && (
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-2">
+        <div className="text-sm text-muted-foreground w-full sm:w-auto text-center sm:text-left">
+          Showing <span className="font-medium text-foreground">{indexOfFirstItem + 1}</span> to <span className="font-medium text-foreground">{Math.min(indexOfLastItem, filteredApplications.length)}</span> of <span className="font-medium text-foreground">{filteredApplications.length}</span> results
+        </div>
+        
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="w-9 h-9 p-0 bg-canvas cursor-pointer"
+          >
+            <CaretLeft className="size-4" />
+          </Button>
+          
+          <div className="flex items-center gap-1 mx-1">
+            {getPageNumbers().map((page, index) => (
+              page === '...' ? (
+                <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground tracking-widest">...</span>
+              ) : (
+                <Button
+                  key={page}
+                  variant={currentPage === page ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setCurrentPage(page)}
+                  className={cn("w-9 h-9 p-0 cursor-pointer", currentPage !== page && "bg-canvas hover:bg-muted")}
+                >
+                  {page}
+                </Button>
+              )
+            ))}
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="w-9 h-9 p-0 bg-canvas cursor-pointer"
+          >
+            <CaretRight className="size-4" />
+          </Button>
+        </div>
+      </div>
+    )}
+
     </div>
   );
 }

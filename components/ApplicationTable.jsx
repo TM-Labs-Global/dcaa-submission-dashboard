@@ -39,11 +39,12 @@ import {
 
 // Helper function to extract flattened values
 const getFieldValue = (app, keyPath, fallback = "N/A") => {
-  const userInputs = app.raw_data?.__submission?.user_inputs;
+  const raw = app.raw_data || {};
+  const userInputs = raw.__submission?.user_inputs || raw.user_inputs || raw.response || {};
   if (userInputs && userInputs[keyPath]) {
     return userInputs[keyPath];
   }
-  return app.raw_data?.[keyPath] || fallback;
+  return raw[keyPath] || fallback;
 };
 
 const STREAMS = [
@@ -105,8 +106,8 @@ export function ApplicationTable({ applications }) {
   const filteredApplications = applications.filter((app) => {
     // Stream Match
     const raw = app.raw_data || {};
-    const userInputs = raw.__submission?.user_inputs || {};
-    const stream = userInputs.input_radio || raw.input_radio;
+    const userInputs = raw.__submission?.user_inputs || raw.user_inputs || raw.response || {};
+    const stream = userInputs.input_radio || raw.input_radio || "N/A";
     
     let streamMatch = true;
     if (selectedStream !== "all") {
@@ -308,12 +309,14 @@ export function ApplicationTable({ applications }) {
               currentItems.map((app) => {
                 // Extract the core fields based on Fluent Forms standard keys
                 const raw = app.raw_data || {};
-                const userInputs = raw.__submission?.user_inputs || {};
+                const userInputs = raw.__submission?.user_inputs || raw.user_inputs || raw.response || {};
                 
                 // Name can be an object or string
                 let name = "N/A";
-                if (userInputs.names) {
+                if (typeof userInputs.names === 'string') {
                   name = userInputs.names;
+                } else if (userInputs.names && userInputs.names.first_name) {
+                  name = `${userInputs.names.first_name || ''} ${userInputs.names.last_name || ''}`.trim();
                 } else if (raw.names) {
                   name = `${raw.names.first_name || ''} ${raw.names.last_name || ''}`.trim();
                 } else if (raw.first_name) {
@@ -335,7 +338,7 @@ export function ApplicationTable({ applications }) {
                 const actedBefore = userInputs.input_radio_1;
                 const imageUpload = userInputs['image-upload'];
 
-                const dateStr = app.created_at ? new Date(app.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : "N/A";
+                const dateStr = app.created_at ? format(new Date(app.created_at), "MMM d, yyyy") : "N/A";
 
                 return (
                   <TableRow key={app.id}>
@@ -379,7 +382,7 @@ export function ApplicationTable({ applications }) {
                                   Applicant Profile
                                 </DialogTitle>
                                 <DialogDescription className="text-sm text-muted-foreground">
-                                  Submitted on <span suppressHydrationWarning>{new Date(app.created_at).toLocaleString(undefined, { dateStyle: "long", timeStyle: "short" })}</span>
+                                  Submitted on <span suppressHydrationWarning>{app.created_at ? format(new Date(app.created_at), "MMMM d, yyyy 'at' h:mm a") : "N/A"}</span>
                                 </DialogDescription>
                               </div>
                               <a 

@@ -8,6 +8,16 @@ const supabase = createClient(
 
 export async function POST(request) {
   try {
+    // 1. Verify the security token
+    const url = new URL(request.url);
+    const token = url.searchParams.get('token');
+    const expectedToken = process.env.WEBHOOK_SECRET || 'dcaa_secure_webhook_2026';
+    
+    if (!token || token !== expectedToken) {
+      console.warn('Unauthorized webhook attempt');
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const formData = await request.json();
     
     // Fallback: If 'email' isn't explicitly named in formData, try to extract it from common names, otherwise null

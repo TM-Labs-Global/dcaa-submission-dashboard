@@ -7,7 +7,7 @@ export function AppShell({
 	return (
         <SidebarProvider>
             {sidebar}
-            <SidebarInset className="p-4 md:p-6">
+            <SidebarInset className="p-4 md:p-6 relative">
 				<div className="flex flex-1 flex-col gap-4">{children}</div>
 			</SidebarInset>
         </SidebarProvider>

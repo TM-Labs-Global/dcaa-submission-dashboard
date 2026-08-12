@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { LogoIcon } from '@/components/logo';
 import { Envelope, Lock, Eye, EyeSlash, ArrowRight } from '@phosphor-icons/react';
 
 export default function LoginPage() {
@@ -56,25 +56,26 @@ export default function LoginPage() {
           <div className="relative z-10">
             {/* Project Branding */}
             <div className="flex items-center gap-2.5 text-white">
-              <LogoIcon className="size-8 text-secondary" />
-              <span className="font-semibold text-xs tracking-wider uppercase text-canvas-subtle/80">Creator Dashboard</span>
+              <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto' }} />
+              <span className="font-semibold text-xs tracking-wider uppercase text-canvas-subtle/80">DCAA Applications</span>
             </div>
           </div>
 
           <div className="relative z-10 space-y-6">
-            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight font-heading">
-              Welcome to the <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-emerald-400">
-                creator insights portal.
+            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight leading-tight font-heading">
+              <span className="text-white">Welcome to the</span> <br />
+              <span className="text-[#30A7D8]">
+                DCAA application
               </span>
+              <span className="text-white"> portal.</span>
             </h1>
             <p className="text-base text-white/70 max-w-sm leading-relaxed">
-              Login to track how your report is performing.
+              Login to track how your application form is performing.
             </p>
           </div>
 
           <div className="relative z-10 text-xs text-white/40 font-mono">
-            © 2026 CREATOR REPORTS GLOBAL
+            © 2026 DIGITAL CREATOR AFRICA ACADEMY
           </div>
         </div>
       </div>
@@ -85,8 +86,8 @@ export default function LoginPage() {
           {/* Mobile Logo Header */}
           <div className="flex flex-col space-y-2 md:hidden">
             <div className="flex items-center gap-2">
-              <LogoIcon className="size-8 text-primary" />
-              <span className="font-bold text-xl tracking-tight text-primary">Creator Dashboard</span>
+              <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto' }} />
+              <span className="font-bold text-xl tracking-tight text-primary">DCAA Applications</span>
             </div>
           </div>
 

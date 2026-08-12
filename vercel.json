@@ -1,16 +1,7 @@
 {
   "functions": {
-    "app/api/stats/export/route.js": {
+    "app/api/applications/export/route.js": {
       "maxDuration": 60
-    },
-    "app/api/cron/sync-sender/route.js": {
-      "maxDuration": 30
     }
-  },
-  "crons": [
-    {
-      "path": "/api/cron/sync-sender",
-      "schedule": "0 0 * * *"
-    }
-  ]
+  }
 }

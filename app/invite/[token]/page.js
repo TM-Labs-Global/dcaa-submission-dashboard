@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { LogoIcon } from '@/components/logo';
 import { signIn } from 'next-auth/react';
 import { Lock, Eye, EyeSlash, CheckCircle } from '@phosphor-icons/react';
 
@@ -143,8 +143,8 @@ export default function InvitePage() {
           <div className="mx-auto w-full max-w-md space-y-8">
             <div className="flex flex-col space-y-2 md:hidden">
               <div className="flex items-center gap-2">
-                <LogoIcon className="size-8 text-primary" />
-                <span className="font-bold text-xl tracking-tight text-primary">Creator Dashboard</span>
+                <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto' }} />
+                <span className="font-bold text-xl tracking-tight text-primary">DCAA Applications</span>
               </div>
             </div>
 
@@ -174,25 +174,26 @@ export default function InvitePage() {
 
           <div className="relative z-10">
             <div className="flex items-center gap-2.5 text-white">
-              <LogoIcon className="size-8 text-secondary" />
-              <span className="font-semibold text-xs tracking-wider uppercase text-canvas-subtle/80">Creator Dashboard</span>
+              <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto' }} />
+              <span className="font-semibold text-xs tracking-wider uppercase text-canvas-subtle/80">DCAA Applications</span>
             </div>
           </div>
 
           <div className="relative z-10 space-y-6">
             <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight font-heading">
               Welcome to the <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-emerald-400">
-                creator insights portal.
+              <span className="text-[#30A7D8]">
+                DCAA application
               </span>
+              <span className="text-white"> portal.</span>
             </h1>
             <p className="text-base text-white/70 max-w-sm leading-relaxed">
-              Set up your account to start tracking your reports.
+              Set up your account to start reviewing applications.
             </p>
           </div>
 
           <div className="relative z-10 text-xs text-white/40 font-mono">
-            © 2026 CREATOR REPORTS GLOBAL
+            © 2026 DIGITAL CREATOR AFRICA ACADEMY
           </div>
         </div>
       </div>
@@ -203,8 +204,8 @@ export default function InvitePage() {
           {/* Mobile Logo Header */}
           <div className="flex flex-col space-y-2 md:hidden">
             <div className="flex items-center gap-2">
-              <LogoIcon className="size-8 text-primary" />
-              <span className="font-bold text-xl tracking-tight text-primary">Creator Dashboard</span>
+              <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto' }} />
+              <span className="font-bold text-xl tracking-tight text-primary">DCAA Applications</span>
             </div>
           </div>
 

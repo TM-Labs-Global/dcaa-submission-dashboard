@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DCAA Applications Dashboard
+
+An internal admin dashboard for reviewing and managing incoming applications for the **Digital Creator Academy Africa (DCAA)** programme. Built with Next.js, Supabase, and NextAuth.
+
+## What It Does
+
+- **Displays applications** submitted via WordPress Fluent Forms (received through a webhook and stored in Supabase).
+- **Filters** applications by stream, date range, and sub-stream.
+- **Exports** filtered or all applications to CSV, Excel, or JSON.
+- **User management** — invite users, approve/pause/remove access, manage admin roles.
+- **Secure authentication** via email/password with NextAuth.
 
 ## Getting Started
 
-First, run the development server:
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Set Up Environment Variables
+
+Create a `.env.local` file in the root with the following values:
+
+```env
+# Database (Neon / Postgres)
+DATABASE_URL=
+
+# Auth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=
+
+# Encryption for stored credentials (32-byte key, base64-encoded)
+CREDENTIALS_ENCRYPTION_KEY=
+
+# Supabase (Fluent Forms application data)
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+
+# Admin Seed Credentials (used only by the seed script)
+ADMIN_EMAIL_1=
+ADMIN_PASSWORD_1=
+ADMIN_EMAIL_2=
+ADMIN_PASSWORD_2=
+```
+
+Generate secrets with:
+```bash
+openssl rand -base64 32
+```
+
+### 3. Seed Admin Users
+
+```bash
+node scripts/seed-admin.js
+```
+
+### 4. Run the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) and log in with your admin credentials.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework**: Next.js (App Router)
+- **Database**: Neon (PostgreSQL) via Drizzle ORM
+- **Application Data**: Supabase (receives Fluent Forms webhook data)
+- **Auth**: NextAuth.js (credentials provider)
+- **UI**: Shadcn/ui + Tailwind CSS
+- **Icons**: Phosphor Icons + Lucide
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploy on [Vercel](https://vercel.com). Set all environment variables in the Vercel dashboard and update `NEXTAUTH_URL` to your production domain.

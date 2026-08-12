@@ -18,8 +18,11 @@ const dmSans = DM_Sans({
    No CDN link needed. */
 
 export const metadata = {
-  title: 'Creator Report Performance Dashboard',
-  description: 'Secure external dashboard for sharing report/download performance with partners and investors',
+  title: 'DCAA form submission',
+  description: 'DCAA form submission dashboard',
+  icons: {
+    icon: '/pictures/dcaa-logo-transparent.png',
+  },
 };
 
 export default function RootLayout({ children }) {

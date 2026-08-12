@@ -25,9 +25,9 @@ export function UserTable({ users, onAction }) {
         <TableHeader>
           <TableRow>
             <TableHead>Email</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Created</TableHead>
+            <TableHead className="hidden md:table-cell">Role</TableHead>
+            <TableHead className="hidden md:table-cell">Status</TableHead>
+            <TableHead className="hidden md:table-cell">Created</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -41,20 +41,33 @@ export function UserTable({ users, onAction }) {
           ) : (
             users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium text-foreground">{user.email}</TableCell>
-                <TableCell>
+                <TableCell className="font-medium text-foreground py-3">
+                  <div className="flex flex-col gap-1">
+                    {/* Truncated Email */}
+                    <div className="truncate max-w-[170px] xs:max-w-[220px] sm:max-w-none text-sm font-semibold" title={user.email}>
+                      {user.email}
+                    </div>
+                    {/* Mobile-only Role Badge styled with Status color */}
+                    <div className="md:hidden">
+                      <Badge className={`${statusBadge(user.status)} text-[10px] px-1.5 py-0 h-4 border-0 font-medium`}>
+                        {user.role === 'admin' ? 'Admin' : 'Viewer'}
+                      </Badge>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
                   <Badge variant="outline" className="text-primary">
                     {user.role === 'admin' ? 'Admin' : 'Viewer'}
                   </Badge>
                 </TableCell>
-                <TableCell>
+                <TableCell className="hidden md:table-cell">
                   <Badge className={statusBadge(user.status)}>
                     {user.status === 'active' && 'Active'}
                     {user.status === 'pending' && 'Pending'}
                     {user.status === 'paused' && 'Paused'}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-muted-foreground text-sm">
+                <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </TableCell>
                 <TableCell>

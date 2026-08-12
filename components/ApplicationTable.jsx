@@ -28,7 +28,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Funnel, Download, CaretDown, Calendar as CalendarIcon, X, CaretLeft, CaretRight } from "@phosphor-icons/react";
+import { Funnel, Download, CaretDown, Calendar as CalendarIcon, X, CaretLeft, CaretRight, DotsThree } from "@phosphor-icons/react";
 import { format, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -64,6 +64,9 @@ export function ApplicationTable({ applications }) {
   const [selectedApp, setSelectedApp] = useState(null);
   const [selectedStream, setSelectedStream] = useState(urlStream);
   const [subStreamFilter, setSubStreamFilter] = useState("all");
+  const [activeStatusTab, setActiveStatusTab] = useState("all");
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [openDialogId, setOpenDialogId] = useState(null);
   
   // Store dates keyed by stream name to preserve filter state across navigation
   const [streamDates, setStreamDates] = useState({});
@@ -74,7 +77,7 @@ export function ApplicationTable({ applications }) {
   // Reset pagination to first page when any filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedStream, subStreamFilter, streamDates]);
+  }, [selectedStream, subStreamFilter, streamDates, activeStatusTab]);
 
   // Get the current active date for the selected stream
   const date = streamDates[selectedStream] || { from: undefined, to: undefined };
@@ -90,6 +93,7 @@ export function ApplicationTable({ applications }) {
   useEffect(() => {
     setSelectedStream(urlStream);
     setSubStreamFilter("all");
+    setActiveStatusTab("all");
     // Date is intentionally NOT wiped here anymore. Changing selectedStream
     // automatically pulls the correct historical date from streamDates.
   }, [urlStream]);
@@ -102,8 +106,8 @@ export function ApplicationTable({ applications }) {
     );
   }
 
-  // 2. Filter applications based on selected stream and date
-  const filteredApplications = applications.filter((app) => {
+  // 2. Filter applications based on selected stream and date (Base Filter for Counts)
+  const baseFilteredApplications = applications.filter((app) => {
     // Stream Match
     const raw = app.raw_data || {};
     const userInputs = raw.__submission?.user_inputs || raw.user_inputs || raw.response || {};
@@ -134,6 +138,30 @@ export function ApplicationTable({ applications }) {
     }
 
     return streamMatch && dateMatch;
+  });
+
+  // 3. Calculate status counts
+  const counts = {
+    all: baseFilteredApplications.length,
+    shortlisted: 0,
+    rejected: 0,
+    hired: 0,
+  };
+
+  baseFilteredApplications.forEach(app => {
+    const status = app.status || "pending";
+    if (counts[status] !== undefined) counts[status]++;
+  });
+
+  // 4. Apply final Status filter
+  const filteredApplications = baseFilteredApplications.filter((app) => {
+    let statusMatch = true;
+    if (activeStatusTab !== "all") {
+      const appStatus = app.status || "pending";
+      statusMatch = appStatus === activeStatusTab;
+    }
+
+    return statusMatch;
   });
 
   const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
@@ -174,11 +202,33 @@ export function ApplicationTable({ applications }) {
     if (selectedStream === 'all' && subStreamFilter !== 'all') {
       params.append('subStream', subStreamFilter);
     }
+    if (activeStatusTab !== 'all') {
+      params.append('status', activeStatusTab);
+    }
     if (date?.from) {
       params.append('dateFrom', date.from.toISOString());
       if (date.to) params.append('dateTo', date.to.toISOString());
     }
     window.location.href = `/api/applications/export?${params.toString()}`;
+  };
+
+  const handleStatusUpdate = async (id, newStatus) => {
+    setIsUpdatingStatus(true);
+    setOpenDialogId(null); // Instantly close the modal
+    try {
+      const res = await fetch(`/api/applications/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) throw new Error('Failed to update status');
+      router.refresh(); // Refresh data from server
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update status. Please try again.');
+    } finally {
+      setIsUpdatingStatus(false);
+    }
   };
 
   return (
@@ -284,18 +334,48 @@ export function ApplicationTable({ applications }) {
         </div>
       </div>
 
+      {/* Status Tabs Navigation */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-hairline/60 hide-scrollbar pt-2">
+        {[
+          { id: 'all', label: 'All' },
+          { id: 'shortlisted', label: 'Shortlisted' },
+          { id: 'rejected', label: 'Rejected' },
+          { id: 'hired', label: 'Hired' }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveStatusTab(tab.id)}
+            className={cn(
+              "flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap rounded-t-lg border-b-2 transition-colors",
+              activeStatusTab === tab.id 
+                ? "border-primary text-primary bg-primary/5" 
+                : "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/30"
+            )}
+          >
+            <span>{tab.label}</span>
+            <span className={cn(
+              "px-2 py-0.5 text-[10px] rounded-full font-bold",
+              activeStatusTab === tab.id 
+                ? "bg-primary/10 text-primary" 
+                : "bg-muted text-muted-foreground"
+            )}>
+              {counts[tab.id]}
+            </span>
+          </button>
+        ))}
+      </div>
+
       {/* Table Container */}
       <div className="border border-hairline rounded-xl bg-canvas shadow-soft-lift overflow-x-auto">
         <Table className="table-fixed min-w-full md:min-w-[1020px] w-full">
           <TableHeader className="bg-muted/30">
             <TableRow>
               <TableHead className="w-[120px] hidden md:table-cell">Date</TableHead>
-              <TableHead className="w-full md:w-[200px]">Name</TableHead>
-              <TableHead className="w-[180px] hidden md:table-cell">Email</TableHead>
+              <TableHead className="w-full md:w-[220px]">Applicant</TableHead>
+              <TableHead className="w-[120px] hidden md:table-cell">Status</TableHead>
               <TableHead className="w-[120px] hidden md:table-cell">Country</TableHead>
-              <TableHead className="w-[140px] hidden md:table-cell">Phone</TableHead>
               <TableHead className="w-[160px] hidden md:table-cell">Stream</TableHead>
-              <TableHead className="w-[120px] text-right">Details</TableHead>
+              <TableHead className="w-[80px] text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -339,41 +419,69 @@ export function ApplicationTable({ applications }) {
                 const imageUpload = userInputs['image-upload'];
 
                 const dateStr = app.created_at ? format(new Date(app.created_at), "MMM d, yyyy") : "N/A";
+                
+                const appStatus = app.status || "pending";
+                const getStatusBadge = (status) => {
+                  switch (status) {
+                    case 'hired': return <span className="inline-flex items-center rounded-full bg-green-500/15 px-2 py-1 text-[11px] font-medium text-green-700 ring-1 ring-inset ring-green-600/20">● Hired</span>;
+                    case 'shortlisted': return <span className="inline-flex items-center rounded-full bg-yellow-500/15 px-2 py-1 text-[11px] font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">● Shortlisted</span>;
+                    case 'rejected': return <span className="inline-flex items-center rounded-full bg-red-500/15 px-2 py-1 text-[11px] font-medium text-red-700 ring-1 ring-inset ring-red-600/20">● Rejected</span>;
+                    default: return <span className="inline-flex items-center rounded-full bg-gray-500/15 px-2 py-1 text-[11px] font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20">● Not Evaluated</span>;
+                  }
+                };
 
                 return (
                   <TableRow key={app.id}>
                     <TableCell className="w-[120px] max-w-[120px] text-muted-foreground truncate hidden md:table-cell">{dateStr}</TableCell>
-                    <TableCell className="w-full md:w-[200px] md:max-w-[200px]">
+                    <TableCell className="w-full md:w-[220px] md:max-w-[220px]">
                       {/* Mobile Date Subtitle */}
                       <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-0.5 md:hidden">{dateStr}</div>
                       
                       <div className="font-heading font-bold text-base md:text-lg text-foreground truncate">{name}</div>
                       
-                      {/* Desktop Occupation Subtitle */}
-                      {occupation && occupation !== "N/A" && (
-                        <div className="text-xs text-muted-foreground font-normal mt-0.5 truncate hidden md:block">{occupation}</div>
+                      {/* Desktop Email Subtitle instead of Occupation */}
+                      {email && email !== "N/A" && (
+                        <div className="text-xs text-muted-foreground font-normal mt-0.5 truncate hidden md:block" title={email}>{email}</div>
                       )}
                       
-                      {/* Mobile Stream Subtitle */}
-                      {stream && stream !== "N/A" && (
-                        <div className="text-xs text-muted-foreground font-normal mt-0.5 truncate md:hidden">{stream}</div>
-                      )}
+                      {/* Mobile Status Subtitle */}
+                      <div className="mt-1.5 md:hidden">
+                        {getStatusBadge(appStatus)}
+                      </div>
                     </TableCell>
-                    <TableCell className="w-[180px] max-w-[180px] text-muted-foreground truncate hidden md:table-cell" title={email}>{email}</TableCell>
+                    
+                    <TableCell className="w-[120px] max-w-[120px] hidden md:table-cell">
+                      {getStatusBadge(appStatus)}
+                    </TableCell>
+                    
                     <TableCell className="w-[120px] max-w-[120px] text-muted-foreground truncate hidden md:table-cell" title={country}>{country}</TableCell>
-                    <TableCell className="w-[140px] max-w-[140px] text-muted-foreground truncate hidden md:table-cell" title={phone}>{phone}</TableCell>
                     <TableCell className="w-[160px] max-w-[160px] text-muted-foreground truncate hidden md:table-cell" title={stream}>
                       {stream}
                     </TableCell>
-                    <TableCell className="w-[120px] text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <Dialog>
-                          <DialogTrigger 
-                            className={cn(buttonVariants({ variant: "default", size: "sm" }))} 
-                            onClick={() => setSelectedApp(app)}
-                          >
-                            View Details
-                          </DialogTrigger>
+                    
+                    <TableCell className="w-[80px] text-right">
+                      <div className="flex items-center justify-end">
+                        <Dialog open={openDialogId === app.id} onOpenChange={(isOpen) => setOpenDialogId(isOpen ? app.id : null)}>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="flex h-8 w-8 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground outline-none">
+                              <span className="sr-only">Open menu</span>
+                              <DotsThree size={20} weight="bold" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-[180px]">
+                              <DialogTrigger asChild>
+                                <DropdownMenuItem className="cursor-pointer">
+                                  View Details
+                                </DropdownMenuItem>
+                              </DialogTrigger>
+                              <div className="h-px bg-hairline my-1" />
+                              <div className="px-2 py-1.5 text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Move to</div>
+                              <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'not_evaluated')}>Not Evaluated</DropdownMenuItem>
+                              <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'shortlisted')}>Shortlisted</DropdownMenuItem>
+                              <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'rejected')}>Rejected</DropdownMenuItem>
+                              <DropdownMenuItem className="cursor-pointer" disabled={isUpdatingStatus} onClick={() => handleStatusUpdate(app.id, 'hired')}>Hired</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+
                         <DialogContent className="w-[95vw] max-w-[95vw] sm:w-full sm:max-w-2xl max-h-[85vh] p-0 bg-popover border border-hairline rounded-2xl shadow-premium overflow-hidden mx-auto">
                           <div className="p-5 md:p-8 overflow-y-auto max-h-[85vh] w-full flex flex-col gap-6">
                             <DialogHeader className="mb-2 flex flex-row flex-wrap items-start justify-between w-full gap-4">
@@ -385,12 +493,33 @@ export function ApplicationTable({ applications }) {
                                   Submitted on <span suppressHydrationWarning>{app.created_at ? format(new Date(app.created_at), "MMMM d, yyyy 'at' h:mm a") : "N/A"}</span>
                                 </DialogDescription>
                               </div>
-                              <a 
-                                href={`mailto:${email}?subject=DCAA%20Application%20Update%20-%20${encodeURIComponent(name)}`}
-                                className={cn(buttonVariants({ variant: "default", size: "lg" }))}
-                              >
-                                Contact
-                              </a>
+                              <div className="flex items-center gap-2">
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger className={cn(buttonVariants({ variant: "outline", size: "lg" }))}>
+                                    Move To... <CaretDown className="ml-2 size-4" />
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuItem onClick={() => handleStatusUpdate(app.id, 'not_evaluated')}>
+                                      Not Evaluated
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleStatusUpdate(app.id, 'shortlisted')}>
+                                      Shortlisted
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleStatusUpdate(app.id, 'rejected')}>
+                                      Rejected
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleStatusUpdate(app.id, 'hired')}>
+                                      Hired
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                                <a 
+                                  href={`mailto:${email}?subject=DCAA%20Application%20Update%20-%20${encodeURIComponent(name)}`}
+                                  className={cn(buttonVariants({ variant: "default", size: "lg" }))}
+                                >
+                                  Contact
+                                </a>
+                              </div>
                             </DialogHeader>
 
                             {/* Name Details */}

@@ -21,6 +21,7 @@ function toCsv(applications) {
     "Country",
     "Phone",
     "Stream",
+    "Status",
     "Occupation",
     "Have you acted in vertical/mobile video format before?",
     "Years of Acting Experience",
@@ -47,6 +48,7 @@ function toCsv(applications) {
     const phone = userInputs.phone_1 || raw.phone_1 || "N/A";
     const occupation = userInputs.input_text || raw.input_text || "N/A";
     const stream = userInputs.input_radio || raw.input_radio || "N/A";
+    const status = app.status || "pending";
     
     const actedBefore = userInputs.input_radio_1 || "N/A";
     const actingExperience = userInputs.input_text_1 || "N/A";
@@ -61,6 +63,7 @@ function toCsv(applications) {
       country,
       phone,
       stream,
+      status,
       occupation,
       actedBefore,
       actingExperience,
@@ -85,6 +88,7 @@ async function toXlsx(applications) {
     { header: 'Country', key: 'country', width: 15 },
     { header: 'Phone', key: 'phone', width: 18 },
     { header: 'Stream', key: 'stream', width: 25 },
+    { header: 'Status', key: 'status', width: 15 },
     { header: 'Occupation', key: 'occupation', width: 20 },
     { header: 'Have you acted in vertical/mobile video format before?', key: 'actedBefore', width: 45 },
     { header: 'Years of Acting Experience', key: 'actingExperience', width: 25 },
@@ -113,6 +117,7 @@ async function toXlsx(applications) {
     const phone = userInputs.phone_1 || raw.phone_1 || "N/A";
     const occupation = userInputs.input_text || raw.input_text || "N/A";
     const stream = userInputs.input_radio || raw.input_radio || "N/A";
+    const status = app.status || "pending";
     
     const actedBefore = userInputs.input_radio_1 || "N/A";
     const actingExperience = userInputs.input_text_1 || "N/A";
@@ -127,6 +132,7 @@ async function toXlsx(applications) {
       country,
       phone,
       stream,
+      status,
       occupation,
       actedBefore,
       actingExperience,
@@ -150,6 +156,7 @@ export async function GET(request) {
   const stream = searchParams.get('stream') || 'all';
   const format = searchParams.get('format') || 'csv';
   const subStream = searchParams.get('subStream') || 'all';
+  const statusParam = searchParams.get('status') || 'all';
   const searchQuery = searchParams.get('searchQuery');
   const dateFrom = searchParams.get('dateFrom');
   const dateTo = searchParams.get('dateTo');
@@ -213,8 +220,18 @@ export async function GET(request) {
       });
     }
 
+    // Filter by Status
+    if (statusParam !== 'all') {
+      filteredApplications = filteredApplications.filter((app) => {
+        const appStatus = app.status || "pending";
+        if (statusParam === "not_evaluated") return appStatus === "pending" || appStatus === "not_evaluated";
+        return appStatus === statusParam;
+      });
+    }
+
     const streamSuffix = stream === 'all' ? '_all_streams' : `_${stream.replace(/[^a-z0-9]/gi, '_').toLowerCase()}`;
-    const filename = `dcaa_applications${streamSuffix}`;
+    const statusSuffix = statusParam === 'all' ? '' : `_${statusParam}`;
+    const filename = `dcaa_applications${streamSuffix}${statusSuffix}`;
 
     if (format === 'xlsx') {
       const buffer = await toXlsx(filteredApplications);

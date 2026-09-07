@@ -59,7 +59,7 @@ export function AppSidebar({ isAdminPage = false }) {
 				<SidebarMenuButton
                     className="cursor-default text-white hover:bg-transparent active:bg-transparent w-auto px-0"
                     onClick={() => goToStream("all")}>
-					<Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-auto" style={{ width: 'auto' }} />
+					<Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-auto" style={{ width: 'auto', height: 'auto' }} />
 					<span className="font-heading font-semibold text-white">DCAA Application</span>
 				</SidebarMenuButton>
                 {isMobile && (

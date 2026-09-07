@@ -56,7 +56,7 @@ export default function LoginPage() {
           <div className="relative z-10">
             {/* Project Branding */}
             <div className="flex items-center gap-2.5 text-white">
-              <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto' }} />
+              <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto', height: 'auto' }} />
               <span className="font-semibold text-xs tracking-wider uppercase text-canvas-subtle/80">DCAA Applications</span>
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
           {/* Mobile Logo Header */}
           <div className="flex flex-col space-y-2 md:hidden">
             <div className="flex items-center gap-2">
-              <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto' }} />
+              <Image src="/pictures/dcaa-logo-transparent.png" alt="DCAA Logo" width={32} height={32} className="shrink-0 w-auto h-8" style={{ width: 'auto', height: 'auto' }} />
               <span className="font-bold text-xl tracking-tight text-primary">DCAA Applications</span>
             </div>
           </div>

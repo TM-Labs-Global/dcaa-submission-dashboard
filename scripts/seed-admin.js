@@ -17,6 +17,8 @@ async function seedAdmins() {
     console.log('🌱 Seeding admin users...');
 
     for (const admin of ADMINS) {
+      const passwordHash = await bcrypt.hash(admin.password, 10);
+
       // Check if admin already exists
       const existingAdmin = await db
         .select()
@@ -25,25 +27,25 @@ async function seedAdmins() {
         .limit(1);
 
       if (existingAdmin.length) {
-        console.log(`⚠️  Admin user with email ${admin.email} already exists`);
-        continue;
+        // Update existing admin: sync password and ensure status is active
+        await db
+          .update(users)
+          .set({ passwordHash, status: 'active' })
+          .where(eq(users.email, admin.email));
+        console.log(`🔄 Updated password for existing admin: ${admin.email}`);
+      } else {
+        // Insert new admin
+        const newAdmin = await db
+          .insert(users)
+          .values({
+            email: admin.email,
+            passwordHash,
+            role: 'admin',
+            status: 'active',
+          })
+          .returning({ id: users.id, email: users.email });
+        console.log(`✅ Admin user created! Email: ${newAdmin[0].email}`);
       }
-
-      // Hash password
-      const passwordHash = await bcrypt.hash(admin.password, 10);
-
-      // Create admin user
-      const newAdmin = await db
-        .insert(users)
-        .values({
-          email: admin.email,
-          passwordHash,
-          role: 'admin',
-          status: 'active',
-        })
-        .returning({ id: users.id, email: users.email });
-
-      console.log(`✅ Admin user created! Email: ${newAdmin[0].email}`);
     }
     console.log('🎉 Seeding completed!');
   } catch (error) {
